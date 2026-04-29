@@ -18,11 +18,13 @@ import sys
 import json
 import os
 
-# Resolve path to emotion model relative to this script's location
+# Resolve path to emotion model.
+# Priority: EMOTION_MODEL_PATH env variable, then relative path from this script.
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# scripts/ is inside job-finder-backend/, go up 4 levels to reach repo root
+# scripts/ lives inside job-finder-backend/ → go up to repo root
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "..", "..", ".."))
-MODEL_PATH = os.path.join(REPO_ROOT, "emotiondetection", "models", "binary_emotion_model.h5")
+_DEFAULT_MODEL_PATH = os.path.join(REPO_ROOT, "emotiondetection", "models", "binary_emotion_model.h5")
+MODEL_PATH = os.environ.get("EMOTION_MODEL_PATH", _DEFAULT_MODEL_PATH)
 
 # Image dimensions expected by the model (grayscale 48x48 as used in training)
 IMG_SIZE = (48, 48)

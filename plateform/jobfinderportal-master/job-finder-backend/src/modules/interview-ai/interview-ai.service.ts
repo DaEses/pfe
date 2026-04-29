@@ -77,8 +77,7 @@ export class InterviewAIService {
   }
 
   async transcribe(dto: TranscribeDto): Promise<{ text: string }> {
-    const session = await this.findActiveSession(dto.sessionId);
-    void session;
+    await this.findActiveSession(dto.sessionId);
 
     const audioBuffer = Buffer.from(dto.audioBase64, 'base64');
     const tmpFile = path.join(os.tmpdir(), `audio_${Date.now()}.wav`);

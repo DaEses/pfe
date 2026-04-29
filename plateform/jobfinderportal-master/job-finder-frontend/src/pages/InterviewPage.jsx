@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import '../styles/InterviewPage.css';
 
-const API_BASE = 'http://localhost:3000/api/interview-ai';
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api'}/interview-ai`;
 
 function InterviewPage() {
   const [step, setStep] = useState('setup'); // setup | interview | complete
@@ -240,6 +240,16 @@ function InterviewPage() {
     }
   };
 
+  const resetInterview = () => {
+    setStep('setup');
+    setTranscript([]);
+    setSessionId(null);
+    setResume(null);
+    setEmotionHistory([]);
+    setInterviewComplete(false);
+    setError('');
+  };
+
   const getEmotionColor = (emotion) => {
     return emotion === 'IRRITATED' ? '#e74c3c' : '#27ae60';
   };
@@ -342,7 +352,7 @@ function InterviewPage() {
             </div>
           </div>
 
-          <button className="btn-primary" onClick={() => { setStep('setup'); setTranscript([]); setSessionId(null); setResume(null); setEmotionHistory([]); setInterviewComplete(false); }}>
+          <button className="btn-primary" onClick={resetInterview}>
             🔄 Start New Interview
           </button>
         </div>
