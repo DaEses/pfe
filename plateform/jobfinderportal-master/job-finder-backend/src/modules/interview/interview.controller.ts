@@ -1,16 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Delete, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { InterviewService } from './interview.service';
-import { CreateInterviewDto, UpdateInterviewDto } from '../../dtos/interview.dto';
+import {
+  CreateInterviewDto,
+  UpdateInterviewDto,
+} from '../../dtos/interview.dto';
 
 @Controller('interviews')
 export class InterviewController {
   constructor(private readonly interviewService: InterviewService) {}
 
   @Post(':applicationId')
-  create(@Param('applicationId') applicationId: string, @Body() createInterviewDto: CreateInterviewDto) {
+  create(
+    @Param('applicationId') applicationId: string,
+    @Body() createInterviewDto: CreateInterviewDto,
+  ) {
     // TODO: Add JWT guard and get hrUserId from request
     const hrUserId = 'temp-user-id';
-    return this.interviewService.create(applicationId, createInterviewDto, hrUserId);
+    return this.interviewService.create(
+      applicationId,
+      createInterviewDto,
+      hrUserId,
+    );
   }
 
   @Get()
@@ -42,7 +60,10 @@ export class InterviewController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInterviewDto: UpdateInterviewDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateInterviewDto: UpdateInterviewDto,
+  ) {
     // TODO: Add JWT guard and get hrUserId from request
     const hrUserId = 'temp-user-id';
     return this.interviewService.update(id, updateInterviewDto, hrUserId);

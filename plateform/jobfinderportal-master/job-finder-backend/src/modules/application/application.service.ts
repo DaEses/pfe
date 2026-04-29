@@ -1,9 +1,16 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Application } from '../../entities/application.entity';
 import { JobPosting } from '../../entities/job-posting.entity';
-import { CreateApplicationDto, UpdateApplicationStatusDto } from '../../dtos/application.dto';
+import {
+  CreateApplicationDto,
+  UpdateApplicationStatusDto,
+} from '../../dtos/application.dto';
 
 @Injectable()
 export class ApplicationService {
@@ -14,13 +21,18 @@ export class ApplicationService {
     private jobPostingRepository: Repository<JobPosting>,
   ) {}
 
-  async create(jobPostingId: string, createApplicationDto: CreateApplicationDto): Promise<Application> {
+  async create(
+    jobPostingId: string,
+    createApplicationDto: CreateApplicationDto,
+  ): Promise<Application> {
     const jobPosting = await this.jobPostingRepository.findOne({
       where: { id: jobPostingId, status: 'active' },
     });
 
     if (!jobPosting) {
-      throw new BadRequestException('Job posting is not active or does not exist');
+      throw new BadRequestException(
+        'Job posting is not active or does not exist',
+      );
     }
 
     // Check if applicant already applied for this job
@@ -49,7 +61,10 @@ export class ApplicationService {
     return savedApplication;
   }
 
-  async findAllForJob(jobPostingId: string, hrUserId: string): Promise<Application[]> {
+  async findAllForJob(
+    jobPostingId: string,
+    hrUserId: string,
+  ): Promise<Application[]> {
     const jobPosting = await this.jobPostingRepository.findOne({
       where: { id: jobPostingId, postedById: hrUserId },
     });
@@ -83,7 +98,11 @@ export class ApplicationService {
     return application;
   }
 
-  async updateStatus(id: string, updateDto: UpdateApplicationStatusDto, hrUserId: string): Promise<Application> {
+  async updateStatus(
+    id: string,
+    updateDto: UpdateApplicationStatusDto,
+    hrUserId: string,
+  ): Promise<Application> {
     const application = await this.findOne(id, hrUserId);
     Object.assign(application, updateDto);
     return this.applicationRepository.save(application);

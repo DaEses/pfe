@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
 import { Application } from './application.entity';
 import { HRUser } from './hr-user.entity';
 
@@ -31,7 +37,9 @@ export class Interview {
   @CreateDateColumn()
   createdAt: Date;
 
-  @ManyToOne(() => Application, (application) => application.interviews, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Application, (application) => application.interviews, {
+    onDelete: 'CASCADE',
+  })
   application: Application;
 
   @Column()

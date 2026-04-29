@@ -1,4 +1,11 @@
-import { IsString, IsOptional, IsNumber, Min, Max, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  Min,
+  Max,
+  IsDateString,
+} from 'class-validator';
 
 export class CreateInterviewDto {
   @IsString()

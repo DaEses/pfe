@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { HRUser } from './hr-user.entity';
 import { Application } from './application.entity';
 import { JobApplication } from './job-application.entity';
@@ -39,7 +47,9 @@ export class JobPosting {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => HRUser, (hrUser) => hrUser.jobPostings, { onDelete: 'CASCADE' })
+  @ManyToOne(() => HRUser, (hrUser) => hrUser.jobPostings, {
+    onDelete: 'CASCADE',
+  })
   postedBy: HRUser;
 
   @Column()

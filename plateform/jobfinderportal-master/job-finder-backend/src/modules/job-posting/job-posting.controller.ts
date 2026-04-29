@@ -1,6 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Delete, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { JobPostingService } from './job-posting.service';
-import { CreateJobPostingDto, UpdateJobPostingDto } from '../../dtos/job-posting.dto';
+import {
+  CreateJobPostingDto,
+  UpdateJobPostingDto,
+} from '../../dtos/job-posting.dto';
 
 @Controller('job-postings')
 export class JobPostingController {
@@ -28,7 +40,10 @@ export class JobPostingController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateJobPostingDto: UpdateJobPostingDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateJobPostingDto: UpdateJobPostingDto,
+  ) {
     // TODO: Add JWT guard and get hrUserId from request
     const hrUserId = 'temp-user-id';
     return this.jobPostingService.update(id, updateJobPostingDto, hrUserId);

@@ -10,7 +10,11 @@ export class JobApplicationService {
     private jobApplicationRepository: Repository<JobApplication>,
   ) {}
 
-  async createApplication(jobSeekerId: string, jobPostingId: string, coverLetter?: string) {
+  async createApplication(
+    jobSeekerId: string,
+    jobPostingId: string,
+    coverLetter?: string,
+  ) {
     const existingApp = await this.jobApplicationRepository.findOne({
       where: { jobSeekerId, jobPostingId },
     });

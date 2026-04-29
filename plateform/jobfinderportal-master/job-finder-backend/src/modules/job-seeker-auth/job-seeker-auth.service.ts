@@ -4,7 +4,10 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { JobSeeker } from '../../entities/job-seeker.entity';
-import { RegisterJobSeekerDto, LoginJobSeekerDto } from '../../dtos/job-seeker.dto';
+import {
+  RegisterJobSeekerDto,
+  LoginJobSeekerDto,
+} from '../../dtos/job-seeker.dto';
 
 @Injectable()
 export class JobSeekerAuthService {
@@ -15,7 +18,8 @@ export class JobSeekerAuthService {
   ) {}
 
   async register(registerDto: RegisterJobSeekerDto) {
-    const { email, password, firstName, lastName, phone, bio, skills } = registerDto;
+    const { email, password, firstName, lastName, phone, bio, skills } =
+      registerDto;
 
     // Check if user already exists
     const existingSeeker = await this.jobSeekerRepository.findOne({

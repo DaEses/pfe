@@ -8,8 +8,11 @@ export class SavedJobsController {
   @Post(':jobPostingId')
   async saveJob(@Param('jobPostingId') jobPostingId: string, @Request() req) {
     try {
-      const jobSeekerId = (req.user as any)?.id || req.body.jobSeekerId;
-      const result = await this.savedJobsService.saveJob(jobSeekerId, jobPostingId);
+      const jobSeekerId = req.user?.id || req.body.jobSeekerId;
+      const result = await this.savedJobsService.saveJob(
+        jobSeekerId,
+        jobPostingId,
+      );
       return { success: true, data: result };
     } catch (error) {
       return { success: false, message: error.message };
@@ -18,15 +21,18 @@ export class SavedJobsController {
 
   @Get()
   async getSavedJobs(@Request() req) {
-    const jobSeekerId = (req.user as any)?.id || req.query.jobSeekerId;
+    const jobSeekerId = req.user?.id || req.query.jobSeekerId;
     return this.savedJobsService.getSavedJobs(jobSeekerId);
   }
 
   @Delete(':jobPostingId')
   async unsaveJob(@Param('jobPostingId') jobPostingId: string, @Request() req) {
     try {
-      const jobSeekerId = (req.user as any)?.id || req.body.jobSeekerId;
-      const result = await this.savedJobsService.unsaveJob(jobSeekerId, jobPostingId);
+      const jobSeekerId = req.user?.id || req.body.jobSeekerId;
+      const result = await this.savedJobsService.unsaveJob(
+        jobSeekerId,
+        jobPostingId,
+      );
       return result;
     } catch (error) {
       return { success: false, message: error.message };

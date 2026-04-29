@@ -21,7 +21,13 @@ export class JobApplication {
   jobPostingId: string;
 
   @Column({ default: 'applied' })
-  status: 'applied' | 'reviewing' | 'shortlisted' | 'rejected' | 'accepted' | 'withdrawn';
+  status:
+    | 'applied'
+    | 'reviewing'
+    | 'shortlisted'
+    | 'rejected'
+    | 'accepted'
+    | 'withdrawn';
 
   @Column('text', { nullable: true })
   coverLetter: string;

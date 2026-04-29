@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+} from 'typeorm';
 import { JobPosting } from './job-posting.entity';
 import { Interview } from './interview.entity';
 
@@ -34,7 +41,9 @@ export class Application {
   @Column('text', { nullable: true })
   notes: string;
 
-  @ManyToOne(() => JobPosting, (jobPosting) => jobPosting.applications, { onDelete: 'CASCADE' })
+  @ManyToOne(() => JobPosting, (jobPosting) => jobPosting.applications, {
+    onDelete: 'CASCADE',
+  })
   jobPosting: JobPosting;
 
   @Column()

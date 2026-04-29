@@ -1,6 +1,9 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { JobSeekerAuthService } from './job-seeker-auth.service';
-import { RegisterJobSeekerDto, LoginJobSeekerDto } from '../../dtos/job-seeker.dto';
+import {
+  RegisterJobSeekerDto,
+  LoginJobSeekerDto,
+} from '../../dtos/job-seeker.dto';
 
 @Controller('auth/job-seeker')
 export class JobSeekerAuthController {

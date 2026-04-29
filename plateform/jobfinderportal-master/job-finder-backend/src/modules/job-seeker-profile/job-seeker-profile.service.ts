@@ -17,7 +17,8 @@ export class JobSeekerProfileService {
   }
 
   async updateProfile(jobSeekerId: string, updateDto: any) {
-    const { firstName, lastName, phone, bio, profilePicture, resume, skills } = updateDto;
+    const { firstName, lastName, phone, bio, profilePicture, resume, skills } =
+      updateDto;
 
     const seeker = await this.jobSeekerRepository.findOne({
       where: { id: jobSeekerId },
@@ -81,7 +82,8 @@ export class JobSeekerProfileService {
       throw new Error('User not found');
     }
 
-    seeker.workExperience = seeker.workExperience?.filter(exp => exp.id !== expId) || [];
+    seeker.workExperience =
+      seeker.workExperience?.filter((exp) => exp.id !== expId) || [];
     return this.jobSeekerRepository.save(seeker);
   }
 
@@ -94,7 +96,8 @@ export class JobSeekerProfileService {
       throw new Error('User not found');
     }
 
-    seeker.education = seeker.education?.filter(edu => edu.id !== eduId) || [];
+    seeker.education =
+      seeker.education?.filter((edu) => edu.id !== eduId) || [];
     return this.jobSeekerRepository.save(seeker);
   }
 }

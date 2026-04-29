@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import JobListingPage from './pages/JobListingPage';
+import InterviewPage from './pages/InterviewPage';
 import './App.css';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/job_listing" element={<JobListingPage />} />
+        <Route path="/interview" element={<InterviewPage />} />
       </Routes>
       <Footer />
     </div>

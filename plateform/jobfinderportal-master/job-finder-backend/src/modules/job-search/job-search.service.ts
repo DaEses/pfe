@@ -10,7 +10,11 @@ export class JobSearchService {
     private jobPostingRepository: Repository<JobPosting>,
   ) {}
 
-  async findAllActive(filters?: { location?: string; minSalary?: number; maxSalary?: number }) {
+  async findAllActive(filters?: {
+    location?: string;
+    minSalary?: number;
+    maxSalary?: number;
+  }) {
     const query = this.jobPostingRepository
       .createQueryBuilder('job')
       .where('job.status = :status', { status: 'active' })
@@ -23,11 +27,15 @@ export class JobSearchService {
     }
 
     if (filters?.minSalary) {
-      query.andWhere('job.salary >= :minSalary', { minSalary: filters.minSalary });
+      query.andWhere('job.salary >= :minSalary', {
+        minSalary: filters.minSalary,
+      });
     }
 
     if (filters?.maxSalary) {
-      query.andWhere('job.salary <= :maxSalary', { maxSalary: filters.maxSalary });
+      query.andWhere('job.salary <= :maxSalary', {
+        maxSalary: filters.maxSalary,
+      });
     }
 
     return query.getMany();

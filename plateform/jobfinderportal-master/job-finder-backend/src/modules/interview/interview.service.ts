@@ -1,9 +1,16 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Interview } from '../../entities/interview.entity';
 import { Application } from '../../entities/application.entity';
-import { CreateInterviewDto, UpdateInterviewDto } from '../../dtos/interview.dto';
+import {
+  CreateInterviewDto,
+  UpdateInterviewDto,
+} from '../../dtos/interview.dto';
 
 @Injectable()
 export class InterviewService {
@@ -14,7 +21,11 @@ export class InterviewService {
     private applicationRepository: Repository<Application>,
   ) {}
 
-  async create(applicationId: string, createInterviewDto: CreateInterviewDto, hrUserId: string): Promise<Interview> {
+  async create(
+    applicationId: string,
+    createInterviewDto: CreateInterviewDto,
+    hrUserId: string,
+  ): Promise<Interview> {
     const application = await this.applicationRepository.findOne({
       where: { id: applicationId },
       relations: ['jobPosting'],
@@ -46,7 +57,10 @@ export class InterviewService {
     });
   }
 
-  async findByApplicationId(applicationId: string, hrUserId: string): Promise<Interview[]> {
+  async findByApplicationId(
+    applicationId: string,
+    hrUserId: string,
+  ): Promise<Interview[]> {
     const application = await this.applicationRepository.findOne({
       where: { id: applicationId },
       relations: ['jobPosting'],
@@ -83,7 +97,11 @@ export class InterviewService {
     return interview;
   }
 
-  async update(id: string, updateInterviewDto: UpdateInterviewDto, hrUserId: string): Promise<Interview> {
+  async update(
+    id: string,
+    updateInterviewDto: UpdateInterviewDto,
+    hrUserId: string,
+  ): Promise<Interview> {
     const interview = await this.findOne(id, hrUserId);
     Object.assign(interview, updateInterviewDto);
     return this.interviewRepository.save(interview);

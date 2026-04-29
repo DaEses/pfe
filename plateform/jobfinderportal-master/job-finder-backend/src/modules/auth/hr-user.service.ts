@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HRUser } from '../../entities/hr-user.entity';
@@ -11,8 +15,14 @@ export class HRUserService {
     private hrUserRepository: Repository<HRUser>,
   ) {}
 
-  async register(email: string, password: string, companyName: string): Promise<HRUser> {
-    const existingUser = await this.hrUserRepository.findOne({ where: { email } });
+  async register(
+    email: string,
+    password: string,
+    companyName: string,
+  ): Promise<HRUser> {
+    const existingUser = await this.hrUserRepository.findOne({
+      where: { email },
+    });
 
     if (existingUser) {
       throw new ConflictException('Email already registered');
@@ -36,7 +46,10 @@ export class HRUserService {
     return this.hrUserRepository.findOne({ where: { id } });
   }
 
-  async validatePassword(storedPassword: string, providedPassword: string): Promise<boolean> {
+  async validatePassword(
+    storedPassword: string,
+    providedPassword: string,
+  ): Promise<boolean> {
     return bcrypt.compare(providedPassword, storedPassword);
   }
 }

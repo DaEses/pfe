@@ -1,13 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Delete, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { ApplicationService } from './application.service';
-import { CreateApplicationDto, UpdateApplicationStatusDto } from '../../dtos/application.dto';
+import {
+  CreateApplicationDto,
+  UpdateApplicationStatusDto,
+} from '../../dtos/application.dto';
 
 @Controller('applications')
 export class ApplicationController {
   constructor(private readonly applicationService: ApplicationService) {}
 
   @Post(':jobPostingId')
-  create(@Param('jobPostingId') jobPostingId: string, @Body() createApplicationDto: CreateApplicationDto) {
+  create(
+    @Param('jobPostingId') jobPostingId: string,
+    @Body() createApplicationDto: CreateApplicationDto,
+  ) {
     return this.applicationService.create(jobPostingId, createApplicationDto);
   }
 
@@ -26,7 +40,10 @@ export class ApplicationController {
   }
 
   @Patch(':id/status')
-  updateStatus(@Param('id') id: string, @Body() updateDto: UpdateApplicationStatusDto) {
+  updateStatus(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateApplicationStatusDto,
+  ) {
     // TODO: Add JWT guard and get hrUserId from request
     const hrUserId = 'temp-user-id';
     return this.applicationService.updateStatus(id, updateDto, hrUserId);
