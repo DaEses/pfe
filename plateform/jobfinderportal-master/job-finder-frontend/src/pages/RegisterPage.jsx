@@ -4,13 +4,10 @@ import '../styles/Auth.css';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
     email: '',
     phone: '',
     password: '',
     confirmPassword: '',
-    userType: '',
     companyName: '',
     companyDescription: '',
     terms: false,
@@ -53,28 +50,16 @@ function RegisterPage() {
     }
 
     try {
-      const endpoint = formData.userType === 'employer' ?
-        'http://localhost:3000/api/auth/register' :
-        'http://localhost:3000/api/auth/job-seeker/register';
-
-      const body = formData.userType === 'employer' ? {
-        email: formData.email,
-        password: formData.password,
-        companyName: formData.companyName,
-        companyDescription: formData.companyDescription,
-        phone: formData.phone,
-      } : {
-        email: formData.email,
-        password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phone: formData.phone,
-      };
-
-      const response = await fetch(endpoint, {
+      const response = await fetch('http://localhost:3000/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          companyName: formData.companyName,
+          companyDescription: formData.companyDescription,
+          phone: formData.phone,
+        }),
       });
 
       const result = await response.json();
@@ -215,40 +200,22 @@ function RegisterPage() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="userType" style={{ marginBottom: '10px', fontWeight: '500' }}>I am a:</label>
-                    <select
+                    <label htmlFor="companyName" style={{ marginBottom: '10px', fontWeight: '500' }}>Company Name</label>
+                    <input
                       className="form-control"
-                      id="userType"
-                      name="userType"
-                      value={formData.userType}
+                      id="companyName"
+                      type="text"
+                      name="companyName"
+                      placeholder="Enter company name"
+                      value={formData.companyName}
                       onChange={handleChange}
                       required
-                    >
-                      <option value="">Select account type</option>
-                      <option value="jobseeker">Job Seeker</option>
-                      <option value="employer">Employer</option>
-                    </select>
+                    />
                   </div>
 
-                  {formData.userType === 'employer' && (
-                    <>
-                      <div className="form-group">
-                        <label htmlFor="companyName" style={{ marginBottom: '10px', fontWeight: '500' }}>Company Name</label>
-                        <input
-                          className="form-control"
-                          id="companyName"
-                          type="text"
-                          name="companyName"
-                          placeholder="Enter company name"
-                          value={formData.companyName}
-                          onChange={handleChange}
-                          required={formData.userType === 'employer'}
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label htmlFor="companyDescription" style={{ marginBottom: '10px', fontWeight: '500' }}>Company Description</label>
-                        <textarea
+                  <div className="form-group">
+                    <label htmlFor="companyDescription" style={{ marginBottom: '10px', fontWeight: '500' }}>Company Description</label>
+                    <textarea
                           className="form-control"
                           id="companyDescription"
                           name="companyDescription"
@@ -258,8 +225,6 @@ function RegisterPage() {
                           onChange={handleChange}
                         ></textarea>
                       </div>
-                    </>
-                  )}
 
                   <div className="form-group" style={{ marginBottom: '25px' }}>
                     <div className="form-check">
@@ -286,6 +251,8 @@ function RegisterPage() {
 
                 <div style={{ textAlign: 'center', marginTop: '20px', borderTop: '1px solid #ddd', paddingTop: '20px' }}>
                   <p style={{ color: '#666', marginBottom: '0' }}>Already have an account? <a href="/login" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '500' }}>Login here</a></p>
+                  <hr style={{ margin: '15px 0' }} />
+                  <p style={{ color: '#666', marginBottom: '0' }}>Looking for a job? <a href="/job-seeker/register" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '500' }}>Register as a Job Seeker</a></p>
                 </div>
 
                 {/* Social Sign Up */}

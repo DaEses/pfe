@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/JobSeeker/login.css';
 
-function JobSeekerLogin({ onLogin }) {
+function JobSeekerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -22,17 +22,19 @@ function JobSeekerLogin({ onLogin }) {
       });
 
       const result = await response.json();
+      console.log('Login response:', response.status, result);
 
-      if (response.ok && result.data) {
-        const user = result.data;
-        localStorage.setItem('jobSeekerToken', result.access_token);
-        onLogin(user);
+      if (response.ok && result.token) {
+        localStorage.setItem('jobSeekerToken', result.token);
         navigate('/job-seeker/search');
-      } else {
-        setError(result.message || 'Login failed');
+      } else if (!response.ok) {
+        setError(`Login failed: ${result.message || 'Unknown error'}`);
+      } else if (!result.token) {
+        setError('Invalid response from server (no token)');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      console.error('Network error:', err);
+      setError('Network error: ' + err.message);
     } finally {
       setIsLoading(false);
     }

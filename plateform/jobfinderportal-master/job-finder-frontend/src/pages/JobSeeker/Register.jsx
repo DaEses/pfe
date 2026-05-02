@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/JobSeeker/register.css';
 
-function JobSeekerRegister({ onRegisterSuccess }) {
+function JobSeekerRegister() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',

@@ -10,7 +10,8 @@ export class AuthService {
   ) {}
 
   async login(email: string, password: string) {
-    const user = await this.hrUserService.findByEmail(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await this.hrUserService.findByEmail(normalizedEmail);
 
     if (!user || !(await this.hrUserService.validatePassword(user.password, password))) {
       throw new UnauthorizedException('Invalid credentials');
@@ -28,7 +29,8 @@ export class AuthService {
   }
 
   async register(email: string, password: string, companyName: string) {
-    const user = await this.hrUserService.register(email, password, companyName);
+    const normalizedEmail = email.toLowerCase().trim();
+    const user = await this.hrUserService.register(normalizedEmail, password, companyName);
     const payload = { sub: user.id, email: user.email };
     return {
       accessToken: this.jwtService.sign(payload),

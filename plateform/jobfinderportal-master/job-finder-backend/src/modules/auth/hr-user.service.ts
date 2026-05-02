@@ -12,7 +12,8 @@ export class HRUserService {
   ) {}
 
   async register(email: string, password: string, companyName: string): Promise<HRUser> {
-    const existingUser = await this.hrUserRepository.findOne({ where: { email } });
+    const normalizedEmail = email.toLowerCase().trim();
+    const existingUser = await this.hrUserRepository.findOne({ where: { email: normalizedEmail } });
 
     if (existingUser) {
       throw new ConflictException('Email already registered');
@@ -20,7 +21,7 @@ export class HRUserService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const hrUser = this.hrUserRepository.create({
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       companyName,
     });
@@ -29,7 +30,8 @@ export class HRUserService {
   }
 
   async findByEmail(email: string): Promise<HRUser | null> {
-    return this.hrUserRepository.findOne({ where: { email } });
+    const normalizedEmail = email.toLowerCase().trim();
+    return this.hrUserRepository.findOne({ where: { email: normalizedEmail } });
   }
 
   async findById(id: string): Promise<HRUser | null> {

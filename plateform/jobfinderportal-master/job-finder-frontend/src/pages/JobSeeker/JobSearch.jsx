@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../../styles/JobSeeker/job-search.css';
+import InterviewPanel from '../../components/InterviewPanel';
+import StartInterviewModal from '../../components/StartInterviewModal';
 
 function JobSearch() {
   const [jobs, setJobs] = useState([]);
@@ -14,6 +16,9 @@ function JobSearch() {
   const [coverLetter, setCoverLetter] = useState('');
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [savedJobs, setSavedJobs] = useState([]);
+  const [activeTab, setActiveTab] = useState('jobs');
+  const [showStartInterviewModal, setShowStartInterviewModal] = useState(false);
+  const [interviewRefresh, setInterviewRefresh] = useState(0);
 
   const token = localStorage.getItem('jobSeekerToken');
 
@@ -130,6 +135,10 @@ function JobSearch() {
     }
   };
 
+  const handleInterviewStarted = () => {
+    setInterviewRefresh(prev => prev + 1);
+  };
+
   return (
     <div className="job-search">
       <div className="page-header">
@@ -137,7 +146,24 @@ function JobSearch() {
         <p className="page-subtitle">Browse and apply to open positions</p>
       </div>
 
-      <div className="filter-section">
+      <div className="tabs-section">
+        <button
+          className={`tab-btn ${activeTab === 'jobs' ? 'active' : ''}`}
+          onClick={() => setActiveTab('jobs')}
+        >
+          🔍 Find Jobs
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'interviews' ? 'active' : ''}`}
+          onClick={() => setActiveTab('interviews')}
+        >
+          📅 My Interviews
+        </button>
+      </div>
+
+      {activeTab === 'jobs' ? (
+        <>
+          <div className="filter-section">
         <div className="filter-group">
           <label>Location</label>
           <input
@@ -222,6 +248,12 @@ function JobSearch() {
           <p>No jobs found. Try adjusting your filters.</p>
         </div>
       )}
+        </>
+      ) : (
+        <>
+          <InterviewPanel key={interviewRefresh} onStartInterview={() => setShowStartInterviewModal(true)} />
+        </>
+      )}
 
       {showApplyModal && selectedJob && (
         <div className="modal active">
@@ -264,6 +296,13 @@ function JobSearch() {
             </div>
           </div>
         </div>
+      )}
+
+      {showStartInterviewModal && (
+        <StartInterviewModal
+          onClose={() => setShowStartInterviewModal(false)}
+          onInterviewStarted={handleInterviewStarted}
+        />
       )}
     </div>
   );

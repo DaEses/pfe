@@ -16,10 +16,11 @@ export class JobSeekerAuthService {
 
   async register(registerDto: RegisterJobSeekerDto) {
     const { email, password, firstName, lastName, phone, bio, skills } = registerDto;
+    const normalizedEmail = email.toLowerCase().trim();
 
     // Check if user already exists
     const existingSeeker = await this.jobSeekerRepository.findOne({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (existingSeeker) {
@@ -31,7 +32,7 @@ export class JobSeekerAuthService {
 
     // Create new job seeker
     const jobSeeker = this.jobSeekerRepository.create({
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       firstName,
       lastName,
@@ -65,10 +66,11 @@ export class JobSeekerAuthService {
 
   async login(loginDto: LoginJobSeekerDto) {
     const { email, password } = loginDto;
+    const normalizedEmail = email.toLowerCase().trim();
 
     // Find user by email
     const jobSeeker = await this.jobSeekerRepository.findOne({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (!jobSeeker) {

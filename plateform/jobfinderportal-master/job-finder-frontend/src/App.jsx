@@ -6,6 +6,9 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import JobListingPage from './pages/JobListingPage';
+import JobSeekerLogin from './pages/JobSeeker/Login';
+import JobSeekerRegister from './pages/JobSeeker/Register';
+import JobSearch from './pages/JobSeeker/JobSearch';
 import './App.css';
 
 function App() {
@@ -19,6 +22,11 @@ function App() {
         <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/job_listing" element={<JobListingPage />} />
+
+        {/* Job Seeker Routes */}
+        <Route path="/job-seeker/login" element={<JobSeekerLogin />} />
+        <Route path="/job-seeker/register" element={<JobSeekerRegister />} />
+        <Route path="/job-seeker/search" element={<JobSearch />} />
       </Routes>
       <Footer />
     </div>
