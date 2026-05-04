@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiCall } from '../../services/api';
 import '../../styles/JobSeeker/login.css';
 
-function JobSeekerLogin() {
+function JobSeekerLogin({ setIsLoggedIn, setUserRole }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,26 +16,21 @@ function JobSeekerLogin() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/auth/job-seeker/login', {
+      const result = await apiCall('/auth/job-seeker/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
-      const result = await response.json();
-      console.log('Login response:', response.status, result);
-
-      if (response.ok && result.token) {
-        localStorage.setItem('jobSeekerToken', result.token);
+      if (result.token || result.access_token) {
+        localStorage.setItem('jobSeekerToken', result.token || result.access_token);
+        setIsLoggedIn(true);
+        setUserRole('jobseeker');
         navigate('/job-seeker/search');
-      } else if (!response.ok) {
-        setError(`Login failed: ${result.message || 'Unknown error'}`);
-      } else if (!result.token) {
+      } else {
         setError('Invalid response from server (no token)');
       }
     } catch (err) {
-      console.error('Network error:', err);
-      setError('Network error: ' + err.message);
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

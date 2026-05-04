@@ -1,83 +1,88 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { api } from '../services/api';
 import '../styles/Applicants.css';
 
 function Applicants() {
-  const [applicants, setApplicants] = useState([
-    {
-      id: 1,
-      name: 'John Smith',
-      position: 'Senior Developer',
-      email: 'john@example.com',
-      phone: '+1-555-0101',
-      appliedDate: '2024-03-28',
-      status: 'reviewing',
-      score: 85
-    },
-    {
-      id: 2,
-      name: 'Jane Doe',
-      position: 'Product Manager',
-      email: 'jane@example.com',
-      phone: '+1-555-0102',
-      appliedDate: '2024-03-27',
-      status: 'shortlisted',
-      score: 92
-    },
-    {
-      id: 3,
-      name: 'Mike Johnson',
-      position: 'UI/UX Designer',
-      email: 'mike@example.com',
-      phone: '+1-555-0103',
-      appliedDate: '2024-03-26',
-      status: 'interview_scheduled',
-      score: 88
-    },
-    {
-      id: 4,
-      name: 'Emily Brown',
-      position: 'Senior Developer',
-      email: 'emily@example.com',
-      phone: '+1-555-0104',
-      appliedDate: '2024-03-25',
-      status: 'rejected',
-      score: 65
-    },
-    {
-      id: 5,
-      name: 'David Wilson',
-      position: 'Product Manager',
-      email: 'david@example.com',
-      phone: '+1-555-0105',
-      appliedDate: '2024-03-24',
-      status: 'reviewing',
-      score: 78
-    }
-  ]);
-
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [applicants, setApplicants] = useState([]);
+  const [filteredApplicants, setFilteredApplicants] = useState([]);
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const statusOptions = [
     { value: 'all', label: 'All' },
-    { value: 'reviewing', label: 'Reviewing' },
+    { value: 'applied', label: 'Applied' },
     { value: 'shortlisted', label: 'Shortlisted' },
     { value: 'interview_scheduled', label: 'Interview Scheduled' },
+    { value: 'interview_completed', label: 'Interview Completed' },
+    { value: 'accepted', label: 'Accepted' },
     { value: 'rejected', label: 'Rejected' }
   ];
 
-  const filteredApplicants = filterStatus === 'all'
-    ? applicants
-    : applicants.filter(app => app.status === filterStatus);
+  // Fetch job postings on mount
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const data = await api.getJobPostings();
+        setJobs(data);
+        if (data.length > 0) {
+          setSelectedJob(data[0].id);
+        }
+      } catch (err) {
+        setError(err.message || 'Failed to load jobs');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  // Fetch applicants when selected job changes
+  useEffect(() => {
+    if (!selectedJob) return;
+
+    const fetchApplicants = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        const data = await api.getApplicants(selectedJob);
+        setApplicants(data);
+        setFilterStatus('all');
+        setSelectedApplicant(null);
+      } catch (err) {
+        setError(err.message || 'Failed to load applicants');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchApplicants();
+  }, [selectedJob]);
+
+  // Update filtered applicants when status filter changes
+  useEffect(() => {
+    if (filterStatus === 'all') {
+      setFilteredApplicants(applicants);
+    } else {
+      setFilteredApplicants(applicants.filter(app => app.status === filterStatus));
+    }
+  }, [filterStatus, applicants]);
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'reviewing':
-        return <span className="badge badge-info">Under Review</span>;
+      case 'applied':
+        return <span className="badge badge-info">Applied</span>;
       case 'shortlisted':
         return <span className="badge badge-success">Shortlisted</span>;
       case 'interview_scheduled':
         return <span className="badge badge-warning">Interview Scheduled</span>;
+      case 'interview_completed':
+        return <span className="badge badge-info">Interview Completed</span>;
+      case 'accepted':
+        return <span className="badge badge-success">Accepted</span>;
       case 'rejected':
         return <span className="badge badge-danger">Rejected</span>;
       default:
@@ -85,12 +90,27 @@ function Applicants() {
     }
   };
 
-  const updateApplicantStatus = (id, newStatus) => {
-    setApplicants(applicants.map(app =>
-      app.id === id ? { ...app, status: newStatus } : app
-    ));
-    setSelectedApplicant(null);
+  const updateApplicantStatus = async (applicantId, newStatus) => {
+    try {
+      setError('');
+      setSuccess('');
+      await api.updateApplicationStatus(applicantId, newStatus);
+
+      // Update local state
+      const updated = applicants.map(app =>
+        app.id === applicantId ? { ...app, status: newStatus } : app
+      );
+      setApplicants(updated);
+      setSelectedApplicant(null);
+      setSuccess(`Candidate status updated to ${newStatus}`);
+
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.message || 'Failed to update status');
+    }
   };
+
+  const currentJob = jobs.find(j => j.id === selectedJob);
 
   return (
     <div className="applicants">
@@ -99,6 +119,47 @@ function Applicants() {
           <h1>Applicants</h1>
           <p className="page-subtitle">Review and manage job applications</p>
         </div>
+      </div>
+
+      {error && (
+        <div style={{
+          background: '#fee',
+          color: '#c33',
+          padding: '10px',
+          borderRadius: '5px',
+          marginBottom: '15px',
+          borderLeft: '4px solid #c33'
+        }}>
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div style={{
+          background: '#efe',
+          color: '#3c3',
+          padding: '10px',
+          borderRadius: '5px',
+          marginBottom: '15px',
+          borderLeft: '4px solid #3c3'
+        }}>
+          {success}
+        </div>
+      )}
+
+      <div className="job-selector" style={{ marginBottom: '20px' }}>
+        <label>Select Job Position:</label>
+        <select
+          value={selectedJob || ''}
+          onChange={(e) => setSelectedJob(e.target.value)}
+          className="form-control"
+        >
+          {jobs.map(job => (
+            <option key={job.id} value={job.id}>
+              {job.title} ({job.applicantCount || 0} applicants)
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="filter-section">
@@ -114,70 +175,78 @@ function Applicants() {
             </option>
           ))}
         </select>
-        <p className="filter-count">Showing {filteredApplicants.length} applicant(s)</p>
+        <p className="filter-count">Showing {filteredApplicants.length} applicant(s) {currentJob && `for ${currentJob.title}`}</p>
       </div>
 
-      <div className="applicants-container">
-        {filteredApplicants.length > 0 ? (
-          <div className="applicants-table-wrapper">
-            <table className="table applicants-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Position</th>
-                  <th>Applied Date</th>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th>Score</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredApplicants.map(applicant => (
-                  <tr key={applicant.id} className="applicant-row">
-                    <td className="name-cell">
-                      <strong>{applicant.name}</strong>
-                    </td>
-                    <td>{applicant.position}</td>
-                    <td>{new Date(applicant.appliedDate).toLocaleDateString()}</td>
-                    <td>
-                      <a href={`mailto:${applicant.email}`}>{applicant.email}</a>
-                    </td>
-                    <td>{getStatusBadge(applicant.status)}</td>
-                    <td>
-                      <div className="score-bar">
-                        <div
-                          className="score-fill"
-                          style={{ width: `${applicant.score}%` }}
-                        ></div>
-                        <span className="score-text">{applicant.score}%</span>
-                      </div>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-secondary btn-small"
-                        onClick={() => setSelectedApplicant(applicant)}
-                      >
-                        View
-                      </button>
-                    </td>
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <p>Loading applicants...</p>
+        </div>
+      ) : (
+        <div className="applicants-container">
+          {filteredApplicants.length > 0 ? (
+            <div className="applicants-table-wrapper">
+              <table className="table applicants-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
+                    <th>Rating</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="empty-state">
-            <p>No applicants found with the selected filter.</p>
-          </div>
-        )}
-      </div>
+                </thead>
+                <tbody>
+                  {filteredApplicants.map(applicant => (
+                    <tr key={applicant.id} className="applicant-row">
+                      <td className="name-cell">
+                        <strong>{applicant.applicantName}</strong>
+                      </td>
+                      <td>
+                        <a href={`mailto:${applicant.applicantEmail}`}>{applicant.applicantEmail}</a>
+                      </td>
+                      <td>{new Date(applicant.appliedAt).toLocaleDateString()}</td>
+                      <td>{getStatusBadge(applicant.status)}</td>
+                      <td>
+                        {applicant.rating ? (
+                          <div className="score-bar">
+                            <div
+                              className="score-fill"
+                              style={{ width: `${Math.min(applicant.rating * 10, 100)}%` }}
+                            ></div>
+                            <span className="score-text">{applicant.rating}/10</span>
+                          </div>
+                        ) : (
+                          <span style={{ color: '#999' }}>-</span>
+                        )}
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-secondary btn-small"
+                          onClick={() => setSelectedApplicant(applicant)}
+                        >
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="empty-state">
+              <p>No applicants found with the selected filter.</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {selectedApplicant && (
         <div className="modal active">
           <div className="modal-content detailed-modal">
             <div className="modal-header">
-              <h2>{selectedApplicant.name}</h2>
+              <h2>{selectedApplicant.applicantName}</h2>
               <button
                 className="modal-close"
                 onClick={() => setSelectedApplicant(null)}
@@ -188,28 +257,23 @@ function Applicants() {
 
             <div className="applicant-details">
               <div className="detail-row">
-                <span className="detail-label">Position:</span>
-                <span className="detail-value">{selectedApplicant.position}</span>
-              </div>
-
-              <div className="detail-row">
                 <span className="detail-label">Email:</span>
-                <a href={`mailto:${selectedApplicant.email}`} className="detail-value">
-                  {selectedApplicant.email}
+                <a href={`mailto:${selectedApplicant.applicantEmail}`} className="detail-value">
+                  {selectedApplicant.applicantEmail}
                 </a>
               </div>
 
               <div className="detail-row">
                 <span className="detail-label">Phone:</span>
-                <a href={`tel:${selectedApplicant.phone}`} className="detail-value">
-                  {selectedApplicant.phone}
+                <a href={`tel:${selectedApplicant.applicantPhone}`} className="detail-value">
+                  {selectedApplicant.applicantPhone}
                 </a>
               </div>
 
               <div className="detail-row">
                 <span className="detail-label">Applied Date:</span>
                 <span className="detail-value">
-                  {new Date(selectedApplicant.appliedDate).toLocaleDateString()}
+                  {new Date(selectedApplicant.appliedAt).toLocaleDateString()}
                 </span>
               </div>
 
@@ -220,28 +284,44 @@ function Applicants() {
                 </span>
               </div>
 
-              <div className="detail-row">
-                <span className="detail-label">Evaluation Score:</span>
-                <div className="score-bar-large">
-                  <div
-                    className="score-fill"
-                    style={{ width: `${selectedApplicant.score}%` }}
-                  ></div>
-                  <span className="score-text">{selectedApplicant.score}%</span>
+              {selectedApplicant.rating && (
+                <div className="detail-row">
+                  <span className="detail-label">Rating:</span>
+                  <div className="score-bar-large">
+                    <div
+                      className="score-fill"
+                      style={{ width: `${Math.min(selectedApplicant.rating * 10, 100)}%` }}
+                    ></div>
+                    <span className="score-text">{selectedApplicant.rating}/10</span>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {selectedApplicant.notes && (
+                <div className="detail-row">
+                  <span className="detail-label">Notes:</span>
+                  <p className="detail-value" style={{ whiteSpace: 'pre-wrap' }}>{selectedApplicant.notes}</p>
+                </div>
+              )}
+
+              {selectedApplicant.applicantResume && (
+                <div className="detail-row">
+                  <span className="detail-label">Resume:</span>
+                  <p className="detail-value">{selectedApplicant.applicantResume.substring(0, 200)}...</p>
+                </div>
+              )}
 
               <div className="action-section">
                 <label>Update Status:</label>
                 <div className="status-buttons">
                   <button
                     className="btn btn-secondary"
-                    onClick={() => updateApplicantStatus(selectedApplicant.id, 'reviewing')}
+                    onClick={() => updateApplicantStatus(selectedApplicant.id, 'applied')}
                   >
-                    Under Review
+                    Applied
                   </button>
                   <button
-                    className="btn btn-success"
+                    className="btn btn-info"
                     onClick={() => updateApplicantStatus(selectedApplicant.id, 'shortlisted')}
                   >
                     Shortlist
@@ -251,6 +331,12 @@ function Applicants() {
                     onClick={() => updateApplicantStatus(selectedApplicant.id, 'interview_scheduled')}
                   >
                     Schedule Interview
+                  </button>
+                  <button
+                    className="btn btn-success"
+                    onClick={() => updateApplicantStatus(selectedApplicant.id, 'accepted')}
+                  >
+                    Accept
                   </button>
                   <button
                     className="btn btn-danger"

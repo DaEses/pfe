@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiCall } from '../services/api';
 import '../styles/Auth.css';
 
-function LoginPage({ setIsLoggedIn }) {
+function LoginPage({ setIsLoggedIn, setUserRole }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
@@ -16,24 +17,18 @@ function LoginPage({ setIsLoggedIn }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const result = await apiCall('/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('hrUserToken', result.access_token);
-        localStorage.setItem('hrUser', JSON.stringify(result.data));
-        setIsLoggedIn(true);
-        navigate('/');
-      } else {
-        setError(result.message || 'Login failed. Please try again.');
-      }
+      localStorage.setItem('hrUserToken', result.access_token);
+      localStorage.setItem('hrUser', JSON.stringify(result.data));
+      setIsLoggedIn(true);
+      setUserRole('hr');
+      navigate('/hr/dashboard');
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, Unique } from 'typeorm';
 import { JobPosting } from './job-posting.entity';
 import { Interview } from './interview.entity';
 
 @Entity('applications')
+@Unique(['jobPostingId', 'applicantEmail'])
 export class Application {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -10,7 +11,7 @@ export class Application {
   @Column()
   applicantName: string;
 
-  @Column({ unique: true })
+  @Column()
   applicantEmail: string;
 
   @Column()
@@ -22,8 +23,8 @@ export class Application {
   @Column('text', { nullable: true })
   coverLetter: string;
 
-  @Column({ default: 'pending' })
-  status: 'pending' | 'reviewed' | 'shortlisted' | 'rejected' | 'hired';
+  @Column({ default: 'applied' })
+  status: 'applied' | 'shortlisted' | 'interview_scheduled' | 'interview_completed' | 'accepted' | 'rejected';
 
   @CreateDateColumn()
   appliedAt: Date;

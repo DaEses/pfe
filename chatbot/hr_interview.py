@@ -20,7 +20,7 @@ except ImportError:
 
 # ── Configuration ──────────────────────────────────────────────
 OLLAMA_URL    = "http://172.31.48.1:11434/api/chat"
-OLLAMA_MODEL  = "llama3"
+OLLAMA_MODEL  = "llama3.2-vision:11b"
 TRANSCRIPTS_DIR = "transcripts"
 SAMPLE_RATE   = 16000
 os.makedirs(TRANSCRIPTS_DIR, exist_ok=True)
