@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -15,47 +16,74 @@ import JobSeekerRegister from './pages/JobSeeker/Register';
 import JobSearch from './pages/JobSeeker/JobSearch';
 import './App.css';
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState(null); // 'hr' or 'jobseeker'
-
-  useEffect(() => {
-    const hrToken = localStorage.getItem('hrUserToken');
-    const jobSeekerToken = localStorage.getItem('jobSeekerToken');
-
-    if (hrToken) {
-      setIsLoggedIn(true);
-      setUserRole('hr');
-    } else if (jobSeekerToken) {
-      setIsLoggedIn(true);
-      setUserRole('jobseeker');
-    }
-  }, []);
-
+function AppContent() {
   return (
     <div className="app">
-      <Header isLoggedIn={isLoggedIn} userRole={userRole} />
+      <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
 
+        {/* Job Seeker Routes (Default) */}
+        <Route path="/login" element={<JobSeekerLogin />} />
+        <Route path="/signup" element={<JobSeekerRegister />} />
+        <Route
+          path="/job-seeker/search"
+          element={
+            <ProtectedRoute requiredRole="jobseeker">
+              <JobSearch />
+            </ProtectedRoute>
+          }
+        />
+
         {/* HR Routes */}
-        <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/hr/dashboard" element={isLoggedIn && userRole === 'hr' ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/hr/job-postings" element={isLoggedIn && userRole === 'hr' ? <JobPostings /> : <Navigate to="/login" />} />
-        <Route path="/hr/applicants" element={isLoggedIn && userRole === 'hr' ? <Applicants /> : <Navigate to="/login" />} />
-        <Route path="/hr/scheduled-meetings" element={isLoggedIn && userRole === 'hr' ? <ScheduledMeetings /> : <Navigate to="/login" />} />
+        <Route path="/hr/login" element={<LoginPage />} />
+        <Route path="/hr/signup" element={<RegisterPage />} />
+        <Route
+          path="/hr/dashboard"
+          element={
+            <ProtectedRoute requiredRole="hr">
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/hr/job-postings"
+          element={
+            <ProtectedRoute requiredRole="hr">
+              <JobPostings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/hr/applicants"
+          element={
+            <ProtectedRoute requiredRole="hr">
+              <Applicants />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/hr/scheduled-meetings"
+          element={
+            <ProtectedRoute requiredRole="hr">
+              <ScheduledMeetings />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Legacy route for job listings */}
         <Route path="/job_listing" element={<JobListingPage />} />
-
-        {/* Job Seeker Routes */}
-        <Route path="/job-seeker/login" element={<JobSeekerLogin setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />} />
-        <Route path="/job-seeker/register" element={<JobSeekerRegister />} />
-        <Route path="/job-seeker/search" element={isLoggedIn && userRole === 'jobseeker' ? <JobSearch /> : <Navigate to="/job-seeker/login" />} />
       </Routes>
       <Footer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

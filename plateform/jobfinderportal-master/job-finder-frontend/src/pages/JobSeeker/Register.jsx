@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/JobSeeker/register.css';
+import { useAuth } from '../../hooks/useAuth';
+import AuthCard from '../../components/auth/AuthCard';
+import FormInput from '../../components/auth/FormInput';
+import Button from '../../components/auth/Button';
+import AlertBox from '../../components/auth/AlertBox';
+import '../../styles/auth.css';
 
 function JobSeekerRegister() {
   const [formData, setFormData] = useState({
@@ -17,6 +22,7 @@ function JobSeekerRegister() {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +38,6 @@ function JobSeekerRegister() {
     setError('');
     setIsLoading(true);
 
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setIsLoading(false);
@@ -65,7 +70,7 @@ function JobSeekerRegister() {
       if (response.ok) {
         setSuccessMessage('Registration successful! Redirecting to login...');
         setTimeout(() => {
-          navigate('/job-seeker/login');
+          navigate('/login');
         }, 1500);
       } else {
         setError(result.message || 'Registration failed');
@@ -77,139 +82,132 @@ function JobSeekerRegister() {
     }
   };
 
-  const handleLoginClick = () => {
-    navigate('/job-seeker/login');
-  };
-
   return (
-    <div className="register-container">
-      <div className="register-box">
-        <div className="register-header">
-          <h1>Create Your Account</h1>
-          <p className="subtitle">Join our job board and find your next opportunity</p>
-        </div>
-
-        {error && <div className="error-message">{error}</div>}
-        {successMessage && <div className="success-msg">{successMessage}</div>}
-
-        <form onSubmit={handleSubmit} className="register-form">
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="firstName">First Name *</label>
-              <input
-                id="firstName"
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                placeholder="John"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="lastName">Last Name *</label>
-              <input
-                id="lastName"
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                placeholder="Doe"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Email *</label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="your@email.com"
-              required
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="password">Password *</label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                placeholder="At least 6 characters"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm Password *</label>
-              <input
-                id="confirmPassword"
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                placeholder="Re-enter password"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="phone">Phone Number</label>
-            <input
-              id="phone"
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              placeholder="+1-555-0000"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="bio">Bio</label>
-            <textarea
-              id="bio"
-              name="bio"
-              value={formData.bio}
-              onChange={handleInputChange}
-              placeholder="Tell us about yourself..."
-              rows="3"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="skills">Skills (comma-separated)</label>
-            <input
-              id="skills"
-              type="text"
-              name="skills"
-              value={formData.skills}
-              onChange={handleInputChange}
-              placeholder="e.g. JavaScript, React, Node.js"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn btn-primary register-btn"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Creating Account...' : 'Create Account'}
-          </button>
-        </form>
-
-        <div className="register-footer">
-          <p>Already have an account? <button onClick={handleLoginClick} className="link-btn">Login here</button></p>
-        </div>
+    <AuthCard
+      title="Create Your Profile"
+      subtitle="Start your job search journey"
+      theme="jobseeker"
+      maxWidth="500px"
+    >
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <span style={{ background: '#f3e8ff', color: '#a855f7', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>
+          JOB SEEKER
+        </span>
       </div>
-    </div>
+      <form onSubmit={handleSubmit} className="auth-form">
+        {error && <AlertBox type="error" message={error} />}
+        {successMessage && <AlertBox type="success" message={successMessage} />}
+
+        <div className="auth-form-row">
+          <FormInput
+            id="firstName"
+            label="First Name"
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleInputChange}
+            placeholder="John"
+            required
+          />
+          <FormInput
+            id="lastName"
+            label="Last Name"
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleInputChange}
+            placeholder="Doe"
+            required
+          />
+        </div>
+
+        <FormInput
+          id="email"
+          label="Email"
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          placeholder="you@example.com"
+          required
+        />
+
+        <div className="auth-form-row">
+          <FormInput
+            id="password"
+            label="Password"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            placeholder="••••••••"
+            required
+          />
+          <FormInput
+            id="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        <FormInput
+          id="phone"
+          label="Phone Number"
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleInputChange}
+          placeholder="+1 (555) 000-0000"
+        />
+
+        <div>
+          <label htmlFor="bio" className="form-label">Bio</label>
+          <textarea
+            id="bio"
+            name="bio"
+            value={formData.bio}
+            onChange={handleInputChange}
+            placeholder="Tell us about yourself..."
+            rows="3"
+            className="auth-textarea"
+          />
+        </div>
+
+        <FormInput
+          id="skills"
+          label="Skills (comma-separated)"
+          type="text"
+          name="skills"
+          value={formData.skills}
+          onChange={handleInputChange}
+          placeholder="e.g. JavaScript, React, Node.js"
+        />
+
+        <Button
+          type="submit"
+          variant="primary"
+          fullWidth
+          loading={isLoading}
+          theme="jobseeker"
+        >
+          Create Account
+        </Button>
+      </form>
+
+      <div className="auth-footer">
+        <p className="auth-footer-text">
+          Already have an account? <button onClick={() => navigate('/login')} className="auth-link-btn">Sign in</button>
+        </p>
+        <p className="auth-footer-text">
+          Looking to hire? <button onClick={() => navigate('/hr/signup')} className="auth-link-btn">HR Sign Up</button>
+        </p>
+      </div>
+    </AuthCard>
   );
 }
 

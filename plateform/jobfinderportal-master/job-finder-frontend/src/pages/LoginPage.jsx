@@ -1,15 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { apiCall } from '../services/api';
-import '../styles/Auth.css';
+import AuthCard from '../components/auth/AuthCard';
+import FormInput from '../components/auth/FormInput';
+import Button from '../components/auth/Button';
+import AlertBox from '../components/auth/AlertBox';
+import '../styles/auth.css';
 
-function LoginPage({ setIsLoggedIn, setUserRole }) {
+function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,10 +28,7 @@ function LoginPage({ setIsLoggedIn, setUserRole }) {
         body: JSON.stringify({ email, password }),
       });
 
-      localStorage.setItem('hrUserToken', result.access_token);
-      localStorage.setItem('hrUser', JSON.stringify(result.data));
-      setIsLoggedIn(true);
-      setUserRole('hr');
+      login('hr', result.data, result.access_token);
       navigate('/hr/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
@@ -35,105 +38,68 @@ function LoginPage({ setIsLoggedIn, setUserRole }) {
   };
 
   return (
-    <main>
-      {/* Hero Area */}
-      <div className="slider-area">
-        <div className="single-slider section-overly slider-height2 d-flex align-items-center" style={{ backgroundImage: 'url(/assets/img/hero/about.jpg)' }}>
-          <div className="container">
-            <div className="row">
-              <div className="col-xl-12">
-                <div className="hero-cap text-center">
-                  <h2>Login to Your Account</h2>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <AuthCard title="Welcome Back" subtitle="Sign in to your HR account" theme="hr" maxWidth="420px">
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <span style={{ background: '#dbeafe', color: '#2563eb', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>
+          HR PLATFORM
+        </span>
       </div>
+      <form onSubmit={handleSubmit} className="auth-form">
+        {error && <AlertBox type="error" message={error} />}
 
-      {/* Login Section */}
-      <section className="contact-section" style={{ padding: '60px 0' }}>
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-6 col-md-8">
-              <div className="contact-form-wrapper" style={{ background: '#f9f9f9', padding: '40px', borderRadius: '8px', boxShadow: '0 0 20px rgba(0,0,0,0.1)' }}>
-                <h3 style={{ marginBottom: '30px', textAlign: 'center', color: '#333' }}>Sign In to Your Account</h3>
+        <FormInput
+          id="email"
+          label="Email Address"
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-                {error && <div style={{ color: '#c33', background: '#fee', padding: '10px', borderRadius: '5px', marginBottom: '15px', borderLeft: '4px solid #c33' }}>{error}</div>}
+        <FormInput
+          id="password"
+          label="Password"
+          type="password"
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
-                <form onSubmit={handleSubmit}>
-                  <div className="form-group">
-                    <label htmlFor="email" style={{ marginBottom: '10px', fontWeight: '500' }}>Email Address</label>
-                    <input
-                      className="form-control"
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="password" style={{ marginBottom: '10px', fontWeight: '500' }}>Password</label>
-                    <input
-                      className="form-control"
-                      id="password"
-                      type="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="remember"
-                        checked={remember}
-                        onChange={(e) => setRemember(e.target.checked)}
-                      />
-                      <label className="form-check-label" htmlFor="remember">Remember me</label>
-                    </div>
-                    <a href="#" style={{ color: '#ff6b6b', textDecoration: 'none' }}>Forgot Password?</a>
-                  </div>
-
-                  <div className="form-group">
-                    <button type="submit" className="button button-contactForm boxed-btn" style={{ width: '100%', padding: '15px', border: 'none', borderRadius: '5px', fontSize: '16px', cursor: 'pointer', background: '#ff6b6b', color: 'white', fontWeight: '600' }} disabled={loading}>
-                      {loading ? 'Logging in...' : 'Login'}
-                    </button>
-                  </div>
-                </form>
-
-                <div style={{ textAlign: 'center', marginTop: '20px', borderTop: '1px solid #ddd', paddingTop: '20px' }}>
-                  <p style={{ color: '#666', marginBottom: '0' }}>Don't have an account? <a href="/register" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '500' }}>Register here</a></p>
-                </div>
-
-                {/* Social Login */}
-                <div style={{ marginTop: '30px' }}>
-                  <p style={{ textAlign: 'center', color: '#999', marginBottom: '20px' }}>Or login with</p>
-                  <div style={{ display: 'flex', gap: '15px' }}>
-                    <a href="#" className="btn" style={{ flex: 1, backgroundColor: '#3b5998', color: 'white', border: 'none', padding: '12px', borderRadius: '5px', textDecoration: 'none', textAlign: 'center' }}>
-                      <i className="fab fa-facebook-f"></i> Facebook
-                    </a>
-                    <a href="#" className="btn" style={{ flex: 1, backgroundColor: '#1da1f2', color: 'white', border: 'none', padding: '12px', borderRadius: '5px', textDecoration: 'none', textAlign: 'center' }}>
-                      <i className="fab fa-twitter"></i> Twitter
-                    </a>
-                    <a href="#" className="btn" style={{ flex: 1, backgroundColor: '#dd4b39', color: 'white', border: 'none', padding: '12px', borderRadius: '5px', textDecoration: 'none', textAlign: 'center' }}>
-                      <i className="fab fa-google"></i> Google
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <label className="auth-checkbox-label">
+            <input
+              type="checkbox"
+              className="auth-checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+            />
+            Remember me
+          </label>
+          <a href="#" className="auth-link">Forgot Password?</a>
         </div>
-      </section>
-    </main>
+
+        <Button
+          type="submit"
+          variant="primary"
+          fullWidth
+          loading={loading}
+          theme="hr"
+        >
+          Sign In
+        </Button>
+      </form>
+
+      <div className="auth-footer">
+        <p className="auth-footer-text">
+          Don't have an account? <a href="/hr/signup" className="auth-link">Create account</a>
+        </p>
+        <p className="auth-footer-text">
+          Looking for jobs? <a href="/login" className="auth-link">Job Seeker Login</a>
+        </p>
+      </div>
+    </AuthCard>
   );
 }
 
