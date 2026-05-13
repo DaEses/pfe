@@ -390,11 +390,3 @@ npm run lint
 ## License
 
 UNLICENSED
-
-## Support
-
-For issues and questions, please refer to the project documentation or contact the development team.
-
----
-
-**Last Updated**: 2026-05-12
