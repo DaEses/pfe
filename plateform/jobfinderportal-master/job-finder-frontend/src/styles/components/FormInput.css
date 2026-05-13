@@ -1,0 +1,75 @@
+/* Form Input Component Styles */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-sm);
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.form-label .required {
+  color: var(--color-error);
+  font-weight: var(--font-weight-semibold);
+}
+
+.form-input {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-lighter);
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.form-input:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-input:focus {
+  border-color: var(--color-primary-hr);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-input--error {
+  border-color: var(--color-error);
+}
+
+.form-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input:disabled {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-tertiary);
+  cursor: not-allowed;
+}
+
+.form-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  margin-top: var(--spacing-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Variant for Job Seeker forms - changes focus color */
+.form-group.form-group--jobseeker .form-input:focus {
+  border-color: var(--color-primary-jobseeker);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}

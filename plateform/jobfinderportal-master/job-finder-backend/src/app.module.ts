@@ -12,6 +12,7 @@ import { JobSearchModule } from './modules/job-search/job-search.module';
 import { JobApplicationModule } from './modules/job-application/job-application.module';
 import { SavedJobsModule } from './modules/saved-jobs/saved-jobs.module';
 import { JobSeekerProfileModule } from './modules/job-seeker-profile/job-seeker-profile.module';
+import { ChatbotInterviewModule } from './modules/chatbot-interview/chatbot-interview.module';
 import { HRUser } from './entities/hr-user.entity';
 import { JobPosting } from './entities/job-posting.entity';
 import { Application } from './entities/application.entity';
@@ -19,6 +20,9 @@ import { Interview } from './entities/interview.entity';
 import { JobSeeker } from './entities/job-seeker.entity';
 import { JobApplication } from './entities/job-application.entity';
 import { SavedJob } from './entities/saved-job.entity';
+import { ChatbotCandidate } from './entities/chatbot-candidate.entity';
+import { ChatbotInterview } from './entities/chatbot-interview.entity';
+import { ChatbotQuestion } from './entities/chatbot-question.entity';
 
 @Module({
   imports: [
@@ -29,7 +33,18 @@ import { SavedJob } from './entities/saved-job.entity';
       username: process.env.DB_USERNAME || 'postgres',
       password: process.env.DB_PASSWORD || 'password',
       database: process.env.DB_NAME || 'job_finder',
-      entities: [HRUser, JobPosting, Application, Interview, JobSeeker, JobApplication, SavedJob],
+      entities: [
+        HRUser,
+        JobPosting,
+        Application,
+        Interview,
+        JobSeeker,
+        JobApplication,
+        SavedJob,
+        ChatbotCandidate,
+        ChatbotInterview,
+        ChatbotQuestion,
+      ],
       synchronize: process.env.NODE_ENV !== 'production',
       logging: true,
     }),
@@ -42,6 +57,7 @@ import { SavedJob } from './entities/saved-job.entity';
     JobApplicationModule,
     SavedJobsModule,
     JobSeekerProfileModule,
+    ChatbotInterviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

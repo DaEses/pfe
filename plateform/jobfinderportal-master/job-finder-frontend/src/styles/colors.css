@@ -1,0 +1,77 @@
+/* Design System - Colors */
+
+:root {
+  /* Primary Colors */
+  --color-primary-hr: #2563eb; /* Professional Indigo for HR */
+  --color-primary-jobseeker: #a855f7; /* Friendly Purple for Job Seeker */
+
+  /* Neutral Colors */
+  --color-bg-light: #f8fafc;
+  --color-bg-lighter: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-text-tertiary: #94a3b8;
+
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* Status Backgrounds */
+  --color-success-bg: #ecfdf5;
+  --color-error-bg: #fef2f2;
+  --color-warning-bg: #fffbeb;
+  --color-info-bg: #eff6ff;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 28px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+
+  /* Z-index */
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-tooltip: 300;
+}

@@ -1,0 +1,178 @@
+/* Consolidated Auth Styles - Imports and utilities */
+
+@import './colors.css';
+@import './components/FormInput.css';
+@import './components/Button.css';
+@import './components/AlertBox.css';
+@import './components/AuthCard.css';
+
+/* Auth Form Wrapper */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Form Row for side-by-side fields */
+.auth-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+/* Link styling in auth pages */
+.auth-link {
+  color: var(--color-primary-hr);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  transition: color var(--transition-base);
+}
+
+.auth-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.auth-container--jobseeker .auth-link {
+  color: var(--color-primary-jobseeker);
+}
+
+.auth-container--jobseeker .auth-link:hover {
+  color: #9333ea;
+}
+
+/* Link button (text button) */
+.auth-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary-hr);
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  padding: 0;
+  transition: color var(--transition-base);
+}
+
+.auth-link-btn:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.auth-container--jobseeker .auth-link-btn {
+  color: var(--color-primary-jobseeker);
+}
+
+.auth-container--jobseeker .auth-link-btn:hover {
+  color: #9333ea;
+}
+
+/* Divider with text */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+/* Checkbox group */
+.auth-checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+}
+
+.auth-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-primary-hr);
+  transition: all var(--transition-base);
+}
+
+.auth-container--jobseeker .auth-checkbox {
+  accent-color: var(--color-primary-jobseeker);
+}
+
+.auth-checkbox:hover {
+  transform: scale(1.05);
+}
+
+.auth-checkbox-label {
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  user-select: none;
+}
+
+/* Auth Footer */
+.auth-footer {
+  text-align: center;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.auth-footer-text {
+  margin: var(--spacing-md) 0;
+  line-height: var(--line-height-normal);
+}
+
+.auth-footer-text strong {
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Textarea styling */
+.auth-textarea {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-lighter);
+  transition: all var(--transition-base);
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.auth-textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.auth-textarea:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-textarea:focus {
+  border-color: var(--color-primary-hr);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.auth-container--jobseeker .auth-textarea:focus {
+  border-color: var(--color-primary-jobseeker);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .auth-form-row {
+    grid-template-columns: 1fr;
+  }
+}
